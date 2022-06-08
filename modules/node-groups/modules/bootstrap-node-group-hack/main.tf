@@ -7,6 +7,7 @@ resource "shell_script" "default" {
     "SUBNET_ID"           = var.subnet_id
     "NODE_POOL_NAME"      = var.bootstrap_name
     "VM_SIZE"             = var.bootstrap_vm_size
+    "AZURE_SUBSCRIPTION_ID" = "32496c5b-1147-452c-8469-3a11028f8946"
   }
 
   lifecycle_commands {
