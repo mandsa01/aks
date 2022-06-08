@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fluentd-alerts
+  namespace: logging
+  labels:
+    lnrs.io/k8s-platform: "true"
+    lnrs.io/monitoring-platform: "true"
+    lnrs.io/prometheus-rule: "true"
+spec:
+  groups:
+    - name: fluentd
+      rules:
+        - alert: FluentdOutputStatusRetry
+          expr: increase(fluentd_output_status_retry_count[5m]) > 2
+          for: 5m
+          labels:
+            severity: critical
+            corealert: "true"
+            container: "{{ $labels.container }}"
+            endpoint: "{{ $labels.endpoint }}"
+            host: "{{ $labels.host }}"
+            instance: "{{ $labels.instance }}"
+            job: "{{ $labels.job }}"
+            namespace: "{{ $labels.namespace }}"
+            plugin_id: "{{ $labels.plugin_id }}"
+            pod: "{{ $labels.pod }}"
+            service: "{{ $labels.service }}"
+            type: "{{ $labels.type }}"
+          annotations:
+            summary: "Fluentd output status retry"
+            descritpion: "Output plugin {{ $labels.type }} on Pod {{ $labels.namespace }}/{{ $labels.instance }} has been retrying over the last 5 minutes.\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+        - alert: FluentdOutputBufferQueueLength
+          expr: max_over_time(fluentd_status_buffer_queue_length[5m]) > 2
+          for: 5m
+          labels:
+            severity: critical
+            corealert: "true"
+            container: "{{ $labels.container }}"
+            endpoint: "{{ $labels.endpoint }}"
+            host: "{{ $labels.host }}"
+            instance: "{{ $labels.instance }}"
+            job: "{{ $labels.job }}"
+            namespace: "{{ $labels.namespace }}"
+            plugin_id: "{{ $labels.plugin_id }}"
+            pod: "{{ $labels.pod }}"
+            service: "{{ $labels.service }}"
+            type: "{{ $labels.type }}"
+          annotations:
+            summary: "Fluentd output buffer queue length"
+            descritpion: "Output plugin {{ $labels.type }} on Pod {{ $labels.namespace }}/{{ $labels.instance }} has a buffer that can not been flushed.\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"

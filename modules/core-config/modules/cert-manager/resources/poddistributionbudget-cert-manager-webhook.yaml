@@ -1,0 +1,17 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cert-manager-webhook
+  namespace: cert-manager
+  labels:
+    lnrs.io/k8s-platform: "true"
+    app.kubernetes.io/name: webhook
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/instance: cert-manager
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: webhook
+      app.kubernetes.io/component: webhook
+      app.kubernetes.io/instance: cert-manager

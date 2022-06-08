@@ -1,0 +1,606 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-horizontal-pod-autoscaler
+  namespace: monitoring
+  labels:
+    lnrs.io/k8s-platform: "true"
+    grafana_dashboard: "1"
+data:
+  horizontal-pod-autoscaler.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": 41,
+      "iteration": 1642074614918,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 70
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 0,
+            "y": 0
+          },
+          "id": 2,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "mean"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_spec_target_metric{job=\"kube-state-metrics\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "HPA Target Load",
+          "type": "gauge"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 4,
+            "y": 0
+          },
+          "id": 12,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "(\n(\nmax(kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"}) - \n    ( \n        max(kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"}) - \n        (\n            max(kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"}) -\n            min(kube_horizontalpodautoscaler_spec_min_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})\n        )\n    )\n)\n/ max(kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\",})\n) * 100\n\n",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "HPA Used Capacity",
+          "type": "gauge"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 8,
+            "y": 0
+          },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_status_desired_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Desired Replicas",
+          "type": "stat"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 12,
+            "y": 0
+          },
+          "id": 6,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Current Replicas",
+          "type": "stat"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "orange",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 16,
+            "y": 0
+          },
+          "id": 8,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "min(kube_horizontalpodautoscaler_spec_min_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Minimum Replicas",
+          "type": "stat"
+        },
+        {
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 4,
+            "x": 20,
+            "y": 0
+          },
+          "id": 10,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Maximum Replicas",
+          "type": "stat"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 14,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.3.3",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:37",
+              "alias": "Maximum Replicas",
+              "color": "#F2495C",
+              "linewidth": 2
+            },
+            {
+              "$$hashKey": "object:49",
+              "alias": "Minimum Replicas",
+              "color": "#FF9830",
+              "fillGradient": 3
+            },
+            {
+              "$$hashKey": "object:61",
+              "alias": "Current Replicas",
+              "color": "#73BF69",
+              "fill": 1,
+              "fillGradient": 5,
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:87",
+              "alias": "Desired Replicas",
+              "color": "#5794F2",
+              "dashes": true,
+              "linewidth": 1
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_status_desired_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "interval": "",
+              "legendFormat": "Desired Replicas",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_status_current_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Current Replicas",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_spec_max_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Maximum Replicas",
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "exemplar": true,
+              "expr": "max(kube_horizontalpodautoscaler_spec_min_replicas{job=\"kube-state-metrics\", horizontalpodautoscaler=\"$hpa\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Minimum Replicas",
+              "refId": "D"
+            }
+          ],
+          "thresholds": [],
+          "timeRegions": [],
+          "title": "Horizontal Pod Autoscaler  Behavior",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:111",
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:112",
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false
+          }
+        }
+      ],
+      "schemaVersion": 34,
+      "style": "dark",
+      "tags": [
+        "horizontal-pod-autoscaler",
+        "lnrs-platform"
+      ],
+      "templating": {
+        "list": [
+          {
+            "current": {
+              "selected": true,
+              "text": "monitoring",
+              "value": "monitoring"
+            },
+            "definition": "label_values(kube_horizontalpodautoscaler_labels{job=\"kube-state-metrics\"}, namespace)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "Namespace",
+            "multi": false,
+            "name": "namespace",
+            "options": [],
+            "query": {
+              "query": "label_values(kube_horizontalpodautoscaler_labels{job=\"kube-state-metrics\"}, namespace)",
+              "refId": "StandardVariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          },
+          {
+            "current": {
+              "selected": true,
+              "text": "thanos-query",
+              "value": "thanos-query"
+            },
+            "definition": "label_values(kube_horizontalpodautoscaler_labels{job=\"kube-state-metrics\", namespace=\"$namespace\"}, horizontalpodautoscaler)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "HPA",
+            "multi": false,
+            "name": "hpa",
+            "options": [],
+            "query": {
+              "query": "label_values(kube_horizontalpodautoscaler_labels{job=\"kube-state-metrics\", namespace=\"$namespace\"}, horizontalpodautoscaler)",
+              "refId": "StandardVariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Kubernetes / Horizontal Pod Autoscaler",
+      "uid": "CMJ7fIJnk",
+      "version": 9,
+      "weekStart": ""
+    }

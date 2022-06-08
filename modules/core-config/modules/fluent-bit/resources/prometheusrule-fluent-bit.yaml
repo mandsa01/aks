@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fluentd-bit-alerts
+  namespace: logging
+  labels:
+    lnrs.io/k8s-platform: "true"
+    lnrs.io/monitoring-platform: "true"
+    lnrs.io/prometheus-rule: "true"
+spec:
+  groups:
+    - name: fluent-bit
+      rules:
+        - alert: FluentbitNoOutputBytesProcessed
+          expr: rate(fluentbit_output_proc_bytes_total[5m]) == 0
+          for: 5m
+          labels:
+            severity: critical
+            corealert: "true"
+            namespace: "{{ $labels.namespace }}"
+            container: "{{ $labels.container }}"
+            endpoint: "{{ $labels.endpoint }}"
+            instance: "{{ $labels.instance }}"
+            job: "{{ $labels.job }}"
+            name: "{{ $labels.name }}"
+            pod: "{{ $labels.pod }}"
+            service: "{{ $labels.service }}"
+          annotations:
+            summary: "Fluent Bit no output bytes processed"
+            descritpion: "Output plugin {{ $labels.name }} on Pod {{ $labels.namespace }}/{{ $labels.pod }} has not processed any bytes for at least 5 minutes.\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
