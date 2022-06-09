@@ -68,7 +68,7 @@ module "user_node_groups" {
   taints                       = each.value.taints
   tags                         = merge(var.tags, each.value.tags)
 
-  depends_on = [
+  /*depends_on = [
     module.bootstrap_node_group_hack
-  ]
+  ]*/
 }
