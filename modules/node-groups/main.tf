@@ -31,7 +31,7 @@ module "system_node_groups" {
   tags                         = merge(var.tags, each.value.tags)
 }
 
-module "bootstrap_node_group_hack" {
+/*module "bootstrap_node_group_hack" {
   source = "./modules/bootstrap-node-group-hack"
 
   subscription_id     = var.subscription_id
@@ -44,7 +44,7 @@ module "bootstrap_node_group_hack" {
   depends_on = [
     module.system_node_groups
   ]
-}
+}*/
 
 module "user_node_groups" {
   source   = "./modules/node-group"
